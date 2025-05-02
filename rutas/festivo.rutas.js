@@ -1,7 +1,7 @@
 module.exports = (app) => {
     const controlador = require("../controladores/festivo.controlador");
 
-    app.get("/festivos/:id", controlador.listar);
+    app.get("/festivos/verificar/:id", controlador.listar);
 
-    app.get("/festivos/anio/:anio", controlador.listarPorAnio);
+    app.get("/festivos/verificar/anio/:anio", controlador.listarPorAnio);
 };

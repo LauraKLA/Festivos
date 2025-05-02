@@ -11,7 +11,7 @@ require("./rutas/tipos.rutas")(app);
 require("./rutas/festivo.rutas")(app);
 require("./rutas/fechas.rutas")(app);
 
-const puerto = 3030;
+const puerto = 8080;
 
 app.listen(puerto, () => {
     console.log(`API escuchando en el puerto ${puerto}`);
