@@ -21,6 +21,12 @@ pipeline {
             }
         }
 
+        stage('Limpiar imágenes <none>'){
+            steps {
+                bat 'docker image prune -f'
+            }
+        }
+
         stage('Detener contenedor existente'){
              steps{
               script{
