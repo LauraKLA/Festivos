@@ -21,12 +21,6 @@ pipeline {
             }
         }
 
-        stage('Limpiar imágenes <none>'){
-            steps {
-                bat 'docker image prune -f'
-            }
-        }
-
         stage('Detener contenedor existente'){
              steps{
               script{
@@ -35,7 +29,7 @@ pipeline {
                         docker container inspect dockerapifestivos > nul 2>&1 &&(
                             docker container stop dockerapifestivos
                             docker container rm dockerapifestivos
-                            ) || echo "No existe el contenedor 'dockerapifestivos'"
+                            ) || echo "No existe el contenedor 'dockerapifestivos'."
                         """
                     }
                 }
