@@ -4,7 +4,7 @@ pipeline {
     environment{
         REPO_URL='https://github.com/LauraKLA/Festivos'
         BRANCH= 'main'
-        DOCKER_IMAGE= 'dockerapifestivos:latest'
+        DOCKER_IMAGE= 'dockerapifestivos'
     }
     stages{
         stage('Clonar respositorio'){
