@@ -1,7 +1,7 @@
 module.exports = {
     SERVIDOR : 'dockerbdfestivos', 
     PUERTO : '27017',
-    BASE : 'dockerbdfestivos',
+    BASE : 'festivos',
     USUARIO : '',
     CLAVE : ''
 }
