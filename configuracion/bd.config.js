@@ -1,7 +1,7 @@
 module.exports = {
-    SERVIDOR : '0.0.0.0',
+    SERVIDOR : 'mongo', 
     PUERTO : '27017',
-    BASE : 'festivos',
+    BASE : 'bdfestivos',
     USUARIO : '',
     CLAVE : ''
 }
