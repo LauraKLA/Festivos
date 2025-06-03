@@ -4,7 +4,7 @@ pipeline {
     environment {
         REPO_URL = 'https://github.com/LauraKLA/Festivos'
         BRANCH = 'main'
-        DOCKER_IMAGE = 'dockerapifestivos:latest'
+        IMAGE_NAME = 'dockerapifestivos'
     }
 
     stages {
@@ -17,10 +17,15 @@ pipeline {
         stage('Construir imagen de Docker') {
             steps {
                 script {
-                    bat """
-                    for /f "tokens=*" %%i in ('docker images -q ${DOCKER_IMAGE}') do docker rmi -f %%i
-                    docker build --rm --force-rm -t ${DOCKER_IMAGE} .
-                    """
+                    def buildTag = "${env.BUILD_ID}"
+                    def imageWithTag = "${IMAGE_NAME}:${buildTag}"
+                    def imageLatest = "${IMAGE_NAME}:latest"
+
+                    // Construye con etiqueta única
+                    bat "docker build --rm -t ${imageWithTag} ."
+
+                    // Etiqueta también como latest
+                    bat "docker tag ${imageWithTag} ${imageLatest}"
                 }
             }
         }
@@ -51,10 +56,11 @@ pipeline {
         stage('Crear contenedor') {
             steps {
                 script {
-                    bat "docker container run --network dockerbdfestivos_red --name dockerapifestivos -p 8580:3030 -d %DOCKER_IMAGE%"
+                    bat "docker container run --network dockerbdfestivos_red --name dockerapifestivos -p 8580:3030 -d ${IMAGE_NAME}:latest"
                 }
             }
         }
     }
 }
+
 
