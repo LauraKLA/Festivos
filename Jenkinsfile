@@ -4,6 +4,7 @@ pipeline {
     environment {
         REPO_URL = 'https://github.com/LauraKLA/Festivos'
         BRANCH = 'main'
+        DOCKER_IMAGE = 'dockerapifestivos:latest'
         IMAGE_NAME = 'dockerapifestivos'
     }
 
@@ -14,23 +15,25 @@ pipeline {
             }
         }
 
-        stage('Construir imagen de Docker') {
+        stage('Eliminar imagen previa') {
             steps {
                 script {
-                    def buildTag = "${env.BUILD_ID}"
-                    def imageWithTag = "${IMAGE_NAME}:${buildTag}"
-                    def imageLatest = "${IMAGE_NAME}:latest"
-
-                    // Construye con etiqueta única
-                    bat "docker build --rm -t ${imageWithTag} ."
-
-                    // Etiqueta también como latest
-                    bat "docker tag ${imageWithTag} ${imageLatest}"
+                    bat """
+                    for /f "tokens=*" %%i in ('docker images -q ${DOCKER_IMAGE}') do docker rmi -f %%i
+                    """
                 }
             }
         }
 
-        stage('Limpiar imágenes dangling') {
+        stage('Construir imagen de Docker') {
+            steps {
+                script {
+                    bat "docker build --rm --force-rm -t ${DOCKER_IMAGE} ."
+                }
+            }
+        }
+
+        stage('Limpiar imágenes dangling (por si acaso)') {
             steps {
                 script {
                     bat "docker image prune -f"
@@ -43,10 +46,10 @@ pipeline {
                 script {
                     catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
                         bat """
-                        docker container inspect dockerapifestivos > nul 2>&1 && (
-                            docker container stop dockerapifestivos
-                            docker container rm dockerapifestivos
-                        ) || echo "No existe el contenedor 'dockerapifestivos'."
+                        docker container inspect ${IMAGE_NAME} > nul 2>&1 && (
+                            docker container stop ${IMAGE_NAME}
+                            docker container rm ${IMAGE_NAME}
+                        ) || echo "No existe el contenedor '${IMAGE_NAME}'."
                         """
                     }
                 }
@@ -56,11 +59,9 @@ pipeline {
         stage('Crear contenedor') {
             steps {
                 script {
-                    bat "docker container run --network dockerbdfestivos_red --name dockerapifestivos -p 8580:3030 -d ${IMAGE_NAME}:latest"
+                    bat "docker run --network dockerbdfestivos_red --name ${IMAGE_NAME} -p 8580:3030 -d ${DOCKER_IMAGE}"
                 }
             }
         }
     }
 }
-
-
