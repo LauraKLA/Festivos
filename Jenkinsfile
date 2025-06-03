@@ -17,7 +17,10 @@ pipeline {
         stage('Construir imagen de Docker') {
             steps {
                 script {
-                    bat "docker build --rm -t ${DOCKER_IMAGE} ."
+                    bat """
+                    for /f "tokens=*" %%i in ('docker images -q ${DOCKER_IMAGE}') do docker rmi -f %%i
+                    docker build --rm --force-rm -t ${DOCKER_IMAGE} .
+                    """
                 }
             }
         }
@@ -54,3 +57,4 @@ pipeline {
         }
     }
 }
+
