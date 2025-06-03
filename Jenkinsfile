@@ -39,7 +39,7 @@ pipeline {
         stage('Crear contenedor'){
             steps{
               script{
-                   bat'docker container run --network redcalendario --name dockerapifestivos -p 8580:3030 -d %DOCKER_IMAGE%'
+                   bat'docker container run --network dockerbdfestivos_red --name dockerapifestivos -p 8580:3030 -d %DOCKER_IMAGE%'
               }
            }
          }
