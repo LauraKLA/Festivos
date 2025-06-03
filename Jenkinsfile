@@ -6,17 +6,18 @@ pipeline {
         BRANCH= 'main'
         DOCKER_IMAGE= 'dockerapifestivos:latest'
     }
-    stages{
-        stage('Clonar respositorio'){
-            steps{
-                git branch: "${BRANCH}", credentialsId: "100", url: "${REPO_URL}"
+    stage('Construir imagen de Docker') {
+            steps {
+                script {
+                    bat "docker build --rm -t ${DOCKER_IMAGE} ."
+                }
             }
         }
 
-        stage('Construir imagen de Docker'){
-            steps{
-                script{
-                    bat "docker build -t ${DOCKER_IMAGE} ."
+        stage('Limpiar imágenes dangling') {
+            steps {
+                script {
+                    bat "docker image prune -f"
                 }
             }
         }
