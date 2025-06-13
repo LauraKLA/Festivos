@@ -1,0 +1,14 @@
+services:
+  mongo:
+    image: mongo:latest
+    container_name: dockerbdfestivos
+    ports:
+      - "27020:27017"
+    networks:
+      - red
+    volumes:
+      - ./iniciarbdfestivos.js:/docker-entrypoint-initdb.d/iniciarbdfestivos.js:ro
+
+networks:
+  red:
+    driver: bridge
